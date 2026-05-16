@@ -1,4 +1,4 @@
-const MAP_KEY = 'YOUR_MAP_KEY_HERE';
+const MAP_KEY = '你的KEY';
 const STORAGE_KEY = 'treasure_spots';
 const TOILET_CACHE_KEY = 'toilet_cache';
 const TOILET_CACHE_TTL = 10 * 60 * 1000; // 缓存10分钟
