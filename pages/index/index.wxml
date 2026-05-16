@@ -1,0 +1,76 @@
+<view class="container">
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px">
+    <view class="nav-content">
+      <text class="nav-title">🧻 拉了么shift</text>
+    </view>
+  </view>
+
+  <map id="map" class="map" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" polyline="{{polyline}}" show-location="{{true}}" enable-poi="{{true}}" bindmarkertap="onMarkerTap" bindregionchange="onRegionChange">
+
+    <cover-view class="center-pointer {{markingMode ? 'active' : ''}}">
+      <cover-view class="pointer-icon">📍</cover-view>
+      <cover-view class="pointer-label">标记一处地点</cover-view>
+    </cover-view>
+
+    <cover-view class="tool-bar">
+      <cover-view class="tool-btn" bindtap="goToCurrentLocation">📍</cover-view>
+      <cover-view class="tool-btn {{markingMode ? 'active' : ''}}" bindtap="toggleMarkingMode">
+        {{markingMode ? '❌' : '➕'}}
+      </cover-view>
+    </cover-view>
+
+    <cover-view class="bottom-panel action-panel" wx:if="{{markingMode}}">
+      <cover-view class="panel-header">❤️标记一处地点🤤</cover-view>
+      <cover-view class="confirm-btn" bindtap="confirmTreasure">标记</cover-view>
+    </cover-view>
+
+    <cover-view class="bottom-panel nav-panel" wx:if="{{showNavPanel}}">
+      <cover-view class="nav-header">
+        <cover-view class="nav-target">📍 {{targetName}}</cover-view>
+        <cover-view class="close-nav" bindtap="closeNav">✕</cover-view>
+      </cover-view>
+      <cover-view class="start-nav-btn" bindtap="onStartNav">🔥 立即前往</cover-view>
+    </cover-view>
+
+    <cover-view class="nav-guide-bar" wx:if="{{navMode}}">
+      <cover-view class="guide-info">
+        <cover-view class="guide-inst">{{navInfo.instruction}}</cover-view>
+        <cover-view class="guide-detail">剩余 {{navInfo.distance}}m · {{navInfo.duration}}分钟</cover-view>
+      </cover-view>
+      <cover-view class="exit-nav-btn" bindtap="exitNav">取消</cover-view>
+    </cover-view>
+  </map>
+
+  <view class="search-container {{showSuggestions ? 'expanded' : ''}}" wx:if="{{!navMode}}">
+    <view class="search-bar">
+      <view class="search-icon">🔍</view>
+      <input class="search-input" placeholder="去哪拉？" value="{{searchKeyword}}" bindinput="onSearchInput" bindfocus="onSearchFocus" bindconfirm="onSearchConfirm" />
+      <view class="clear-icon" wx:if="{{searchKeyword}}" catchtap="clearSearch">✕</view>
+    </view>
+    <view class="suggestions-list" wx:if="{{showSuggestions}}">
+      <view class="suggestion-item" wx:for="{{searchSuggestions}}" wx:key="id" catchtap="onSelectSuggestion" data-lat="{{item.location.lat}}" data-lng="{{item.location.lng}}" data-title="{{item.title}}" data-address="{{item.address}}">
+        <view class="s-title">{{item.title}}</view>
+        <view class="s-addr" wx:if="{{item.address}}">{{item.address}}</view>
+      </view>
+      <view class="close-suggest" catchtap="closeSuggestions">收起</view>
+    </view>
+  </view>
+
+  <view class="modal-mask" wx:if="{{showRating}}" bindtap="closeRating">
+    <view class="rating-card" catchtap="stopBubble">
+      <text class="rating-title">求锐评：{{ratingTarget}}</text>
+      <view class="stars-row">
+        <view class="star-item" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+          <view class="star-half star-left" catchtap="setRating" data-val="{{item - 0.5}}"></view>
+          <view class="star-half star-right" catchtap="setRating" data-val="{{item}}"></view>
+          <text class="star-bg">⭐</text>
+          <text class="star-fg {{currentRating >= item ? 'full' : (currentRating >= item - 0.5 ? 'half' : '')}}">⭐</text>
+        </view>
+      </view>
+      <view class="rating-footer">
+        <button class="btn-cancel" bindtap="closeRating">下次一定</button>
+        <button class="btn-confirm" bindtap="confirmRating">这次一定</button>
+      </view>
+    </view>
+  </view>
+</view>
